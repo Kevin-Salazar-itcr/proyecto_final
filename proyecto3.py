@@ -17,14 +17,19 @@ import random
 #-------Archivos externos-------#
 from Funciones_Auxiliares import funciones
 #===============================================================
-pygame.mixer.init()
+pygame.mixer.init() #Activacion de los efectos de sonido de pygame
 def programa():
     inicio=tk.Tk()
-    inicio.state("zoomed")
+    inicio.state("zoomed") #Maximiza el tamaño de la pantalla, sin modificar sus dimensiones
     intro=tk.PhotoImage(file="Fondo.png")
     label=tk.Label(inicio, image=intro).pack()
     pygame.mixer.music.load("viento.mp3")
-    pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(-1) #-1 para qiue el audio se reproduzca indefinidamente
+    def on_closing2():
+        pygame.mixer.music.stop()
+        inicio.destroy()
+    inicio.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
     def salir():
         a=pygame.mixer.Sound("click.mp3")
         a.play()
@@ -54,24 +59,31 @@ def programa():
             def keingell():
                 pygame.mixer.music.load("drama.mp3")
                 pygame.mixer.music.play(-1)
-                def MenuPrincipal():
-                    ventana = tk.Toplevel()
-                    ventana.state("zoomed")
-                    imagenVentana = tk.PhotoImage(file="FondoPelea.png")
-                    fondoVentana = tk.Label(ventana, image=imagenVentana).place(x=0, y=0)
-                    ventana.title("El gran Torneo")
-                    ventana.config(bg="Black")
-                    ventana.config(relief="groove")
-                    ventana.config(bd=8)
-                    label = tk.Label(ventana, text="Bienvenido porfavor elija una opcion", font=("TimesNewRoman", 20), bg="red",
-                                     relief="groove").pack()
-                    Personaje = tk.Button(ventana, text="Personajes", font=("TimesNewRoman", 14), bd=8, bg="red", width="23",
-                                          height="1", relief="groove", cursor="hand2", command=crearPersonajes).place(x=244, y=200)
-                    Cliente = tk.Button(ventana, text="CrearTorneo", font=("TimesNewRoman", 14), bd=8, bg="red", width="23", height="1",
-                                        relief="groove", cursor="hand2", command=makeTorneo).place(x=544, y=200)
-                    Salir = tk.Button(ventana, text="Jugar Torneo", font=("TimesNewRoman", 14), bd=8, bg="red", width="23", height="1",
-                                      relief="groove", cursor="hand2", command=empezarPeleas).place(x=844, y=200)
-                    ventana.mainloop()
+                class MenuPrincipal():
+                    def __init__(self):
+                        self.forma="menu"
+                    def menuKeingell(self):
+                        ventana = tk.Toplevel()
+                        ventana.state("zoomed")
+                        imagenVentana = tk.PhotoImage(file="FondoPelea.png")
+                        fondoVentana = tk.Label(ventana, image=imagenVentana).place(x=0, y=0)
+                        def on_closing():
+                            pygame.mixer.music.stop()
+                            ventana.destroy()
+                        ventana.protocol("WM_DELETE_WINDOW", on_closing)
+                        ventana.title("El gran Torneo")
+                        ventana.config(bg="Black")
+                        ventana.config(relief="groove")
+                        ventana.config(bd=8)
+                        label = tk.Label(ventana, text="Bienvenido porfavor elija una opcion", font=("TimesNewRoman", 20), bg="red",
+                                         relief="groove").pack()
+                        Personaje = tk.Button(ventana, text="Personajes", font=("TimesNewRoman", 14), bd=8, bg="red", width="23",
+                                              height="1", relief="groove", cursor="hand2", command=crearPersonajes).place(x=244, y=200)
+                        Cliente = tk.Button(ventana, text="CrearTorneo", font=("TimesNewRoman", 14), bd=8, bg="red", width="23", height="1",
+                                            relief="groove", cursor="hand2", command=makeTorneo).place(x=544, y=200)
+                        Salir = tk.Button(ventana, text="Jugar Torneo", font=("TimesNewRoman", 14), bd=8, bg="red", width="23", height="1",
+                                          relief="groove", cursor="hand2", command=empezarPeleas).place(x=844, y=200)
+                        ventana.mainloop()
 
                 def pruebita():
                     n = random.randint(1,2)
@@ -90,7 +102,8 @@ def programa():
                         clic.play()
                     
                         Venpersonaje.withdraw()
-                        return MenuPrincipal()
+                        a=MenuPrincipal()
+                        return a.menuKeingell()
                     def crearPersonaje_auxBorrar():
                         clic=pygame.mixer.Sound("click.mp3")
                         clic.play()
@@ -104,6 +117,10 @@ def programa():
                     Venpersonaje.config(bg="Black")
                     Venpersonaje.config(relief="groove")
                     Venpersonaje.config(bd=8)
+                    def on_closing():
+                        pygame.mixer.music.stop()
+                        Venpersonaje.destroy()
+                    Venpersonaje.protocol("WM_DELETE_WINDOW", on_closing)
                     label = tk.Label(Venpersonaje, text="Porfavor Ingrese la siguiente información", font=("TimesNewRoman", 20), bg="red",
                                      relief="groove").pack()
                     confirmar = tk.Button(Venpersonaje, text="Comenzar", font=("TimesNewRoman", 12), bd=8, bg="red", relief="groove",
@@ -128,8 +145,8 @@ def programa():
                     Borrar.title("Gran Torneo")
                     imagenVentana = tk.PhotoImage(file="CivilWar2.png")
                     fondoVentana = tk.Label(Borrar, image=imagenVentana).place(x=0, y=0)
-                    alto=400
-                    ancho=200
+                    alto=200
+                    ancho=400
                     x_ventana=Borrar.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=Borrar.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
@@ -137,6 +154,10 @@ def programa():
                     Borrar.config(bg="Black")
                     Borrar.config(relief="groove")
                     Borrar.config(bd = 8)
+                    def on_closing():
+                        mensaje=mg.showError(message="Procure no salir hasta terminar")
+                    Borrar.protocol("WM_DELETE_WINDOW", on_closing)
+                    
                     label = tk.Label(Borrar, text="Ingrese el alterEgo del personaje\n que quiere borrar.", font=("TimesNewRoman", 14),
                                      bg="gray",bd=8,
                                      relief="groove").pack()
@@ -188,11 +209,14 @@ def programa():
                     tipo.title("Gran Torneo")
                     imagenVentana = tk.PhotoImage(file="CivilWar2.png")
                     fondoVentana = tk.Label(tipo, image=imagenVentana).place(x=0, y=0)
-                    alto=400
-                    ancho=200
+                    alto=150
+                    ancho=350
                     x_ventana=tipo.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=tipo.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    tipo.protocol("WM_DELETE_WINDOW", on_closing2)
                     
                     tipo.geometry(posicion)
                     tipo.config(bg="Black")
@@ -224,8 +248,8 @@ def programa():
                             return sexoPersonaje(tipo)
                     sexo = tk.Toplevel()
                     sexo.title("Gran Torneo")
-                    alto=200
-                    ancho=400
+                    alto=150
+                    ancho=350
                     x_ventana=sexo.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=sexo.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
@@ -235,6 +259,10 @@ def programa():
                     sexo.config(bg="Black")
                     sexo.config(relief="groove")
                     sexo.config(bd=8)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    sexo.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(sexo, text="Sexo de personaje (Hombre o Mujer)\n Solo poner H o M", font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
@@ -261,12 +289,16 @@ def programa():
                             return nombrePersonaje_aux(tipo,sexo)
                     nombre = tk.Toplevel()
                     nombre.title("Gran Torneo")
-                    ancho=400
-                    alto=200
+                    ancho=350
+                    alto=150
                     x_ventana=nombre.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=nombre.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
                     nombre.geometry(posicion)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    nombre.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     imagenVentana = tk.PhotoImage(file="CivilWar2.png")
                     fondoVentana = tk.Label(nombre, image=imagenVentana).place(x=0, y=0)
                     nombre.config(bg="Black")
@@ -290,7 +322,7 @@ def programa():
                         alter.withdraw()
                         alter1 = cajaalter.get()
                         if(alter == ""):
-                            Alerta = mb.showerror(title="Error", message="Porfavor ingrese el alterEgo de su personaje.")
+                            Alerta = mb.showerror(title="Error", message="Porfavor ingrese el Alter Ego de su personaje.")
                             return alterEgoPersonaje(tipo,sexo,nombre)
                         if alter != "":
                             return statsPersonaje(tipo,sexo,nombre,alter1)
@@ -299,14 +331,18 @@ def programa():
                             return alterEgoPersonaje(tipo,sexo,nombre)
                     alter = tk.Toplevel()
                     alter.title("Gran Torneo")
-                    alto=200
-                    ancho=400
+                    alto=150
+                    ancho=350
                     x_ventana=alter.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=alter.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
-                    alter.geometry("350x150")
+                    alter.geometry(posicion)
                     imagenVentana = tk.PhotoImage(file="CivilWar2.png")
                     fondoVentana = tk.Label(alter, image=imagenVentana).place(x=0, y=0)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    alter.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     alter.config(bg="Black")
                     alter.config(relief="groove")
                     alter.config(bd=8)
@@ -352,6 +388,11 @@ def programa():
                     stats.config(bg="Black")
                     stats.config(relief="groove")
                     stats.config(bd=8)
+                    def on_closing():
+                        noCierre=mb.showerror(message="Procure no salir hasta terminar el proceso")
+                    stats.protocol("WM_DELETE_WINDOW", on_closing)
+                    
+                    x=tk.IntVar()
                     label = tk.Label(stats, text="Ingrese las estadisticas de su personaje, la suma de ellas debe dar 100", font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
@@ -359,61 +400,71 @@ def programa():
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaVelocidad = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    cajaVelocidad = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=x)
                     cajaVelocidad.pack()
                     label = tk.Label(stats, text="           Fuerza             ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
+                                     
                                      relief="groove").pack()
-                    cajaFuerza = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    a=tk.IntVar()
+                    cajaFuerza = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=a)
                     cajaFuerza.pack()
                     label = tk.Label(stats, text="        Intelligencia        ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaIntelligencia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    b=tk.IntVar()
+                    cajaIntelligencia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=b)
                     cajaIntelligencia.pack()
                     label = tk.Label(stats, text="  Denfensa Personal  ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaDefensa = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    c=tk.IntVar()
+                    cajaDefensa = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=c)
                     cajaDefensa.pack()
                     label = tk.Label(stats, text="               Magia           ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaMagia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    d=tk.IntVar()
+                    cajaMagia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=d)
                     cajaMagia.pack()
                     label = tk.Label(stats, text="            Telepatiá        ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaTelepatia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    e=tk.IntVar()
+                    cajaTelepatia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=e)
                     cajaTelepatia.pack()
                     label = tk.Label(stats, text="           Estrategia       ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaEstrategia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    g=tk.IntVar()
+                    cajaEstrategia = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=g)
                     cajaEstrategia.pack()
                     label = tk.Label(stats, text="                Volar            ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaVolar = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    h=tk.IntVar()
+                    cajaVolar = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=h)
                     cajaVolar.pack()
                     label = tk.Label(stats, text="           Elasticidad       ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaElasticidad = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    i=tk.IntVar()
+                    cajaElasticidad = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=i)
                     cajaElasticidad.pack()
                     label = tk.Label(stats, text="       Regeneracion     ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
-                    cajaRegeneracion = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove")
+                    j=tk.IntVar()
+                    cajaRegeneracion = tk.Entry(stats, font=("TimesNewRoman", 12), bg="white", relief="groove", textvariable=j)
                     cajaRegeneracion.pack()
                     confirmar = tk.Button(stats, text="Continuar", font=("TimesNewRoman", 12), bd=8, bg="Gray", relief="groove",
                                           width="18", height="1", cursor="hand2", command=statsPersonaje_aux).pack()
@@ -425,7 +476,8 @@ def programa():
                     NuevoPlayer = Players(tipo,sexo,nombre,alterEgo,velocidad,fuerza,inteligencia,defensa,magia,telepatia,estratega,volar,elasticidad,regeneracion)
                     NuevoPlayer.crearPersonaje()
                     Alerta = mb.showinfo(title="Listo", message="Su personaje ha sido almacenado con exito.")
-                    return Menuprincipal()
+                    a=MenuPrincipal()
+                    return a.menuKeingell()
 
 
                 class Players:
@@ -466,9 +518,12 @@ def programa():
                         f.close()
                         f = open("CantidadesPersonajes.txt", "r")
                         mensaje = f.readlines()
-                        creados = mensaje[0]
-                        creados = int(creados) + 1
-                        f.close()
+                        try:
+                            creados = mensaje[0]
+                            creados = int(creados) + 1
+                            f.close()
+                        except:
+                            creados=1
                         f = open("CantidadesPersonajes.txt", "w+")
                         f.write(str(creados))
                         f.close()
@@ -508,7 +563,9 @@ def programa():
                         clic=pygame.mixer.Sound("click.mp3")
                         clic.play()
                         torneo.withdraw()
-                        return MenuPrincipal()
+                        a=MenuPrincipal()
+                        return a.menuKeingell()
+
                     def verTorneosV1_aux():
                         clic=pygame.mixer.Sound("click.mp3")
                         clic.play()
@@ -520,6 +577,11 @@ def programa():
                     torneo.title("Gran Torneo")
                     torneo.config(bg="Black")
                     torneo.config(relief="groove")
+                    def on_closing():
+                        pygame.mixer.music.stop()
+                        torneo.destroy()
+                    torneo.protocol("WM_DELETE_WINDOW", on_closing)
+                    
                     torneo.config(bd=8)
                     label = tk.Label(torneo, text="Porfavor Ingrese la siguiente información", font=("TimesNewRoman", 20), bg="red",
                                      relief="groove").pack()
@@ -536,17 +598,22 @@ def programa():
                         ventanaNombre.withdraw()
                         return fechaTorneo(nombre.get())
                     ventanaNombre = tk.Toplevel()
+                    alto=150
+                    ancho=350
                     x_ventana=ventanaNombre.winfo_screenwidth() // 2 - ancho// 2
                     y_ventana=pantallaRegistro.winfo_screenheight() // 2 - alto// 2
                     posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
-                    
-                    ventanaNombre.geometry("350x150")
+                    ventanaNombre.geometry(posicion)
                     imagenVentana = tk.PhotoImage(file="CivilWar5.png")
                     fondoVentana = tk.Label(ventanaNombre, image=imagenVentana).place(x=0, y=0)
                     ventanaNombre.title("GoldenLines")
                     ventanaNombre.config(bg="Black")
                     ventanaNombre.config(relief="groove")
                     ventanaNombre.config(bd=8)
+                    def on_closing():
+                        Error=mb.showerror(message="Procure no salir hasta terminar el proceso")
+                    ventanaNombre.protocol("WM_DELETE_WINDOW", on_closing)
+                    
                     label = tk.Label(ventanaNombre, text="Ingrese el nombre de su Torneo ",
                                      font=("TimesNewRoman", 14),
                                      bg="gray",
@@ -590,7 +657,16 @@ def programa():
                     ventanalugar = tk.Toplevel()
                     imagenVentana = tk.PhotoImage(file="CivilWar5.png")
                     fondoVentana = tk.Label(ventanalugar, image=imagenVentana).place(x=0, y=0)
-                    ventanalugar.geometry("350x150")
+                    alto=150
+                    ancho=350
+                    x_ventana=ventanalugar.winfo_screenwidth() // 2 - ancho// 2
+                    y_ventana=ventanalugar.winfo_screenheight() // 2 - alto// 2
+                    posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    ventanalugar.geometry(posicion)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    ventanalugar.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     ventanalugar.title("GoldenLines")
                     ventanalugar.config(bg="Black")
                     ventanalugar.config(relief="groove")
@@ -623,9 +699,18 @@ def programa():
                         ventanaTipo.withdraw()
                         return Torneomanual(nombre,fecha,lugar,"EvE")
                     ventanaTipo = tk.Toplevel()
-                    ventanaTipo.geometry("350x180")
+                    alto=150
+                    ancho=350
+                    x_ventana=ventanaTipo.winfo_screenwidth() // 2 - ancho// 2
+                    y_ventana=ventanaTipo.winfo_screenheight() // 2 - alto// 2
+                    posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    ventanaTipo.geometry(posicion)
                     imagenVentana = tk.PhotoImage(file="CivilWar6.png")
                     fondoVentana = tk.Label(ventanaTipo, image=imagenVentana).place(x=0, y=0)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    ventanaTipo.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     ventanaTipo.title("GoldenLines")
                     ventanaTipo.config(bg="Black")
                     ventanaTipo.config(relief="groove")
@@ -668,12 +753,21 @@ def programa():
 
                     ventanaRounds = tk.Toplevel()
                     ventanaRounds.title("GoldenLines")
-                    ventanaRounds.geometry("350x150")
+                    alto=150
+                    ancho=350
+                    x_ventana=ventanaRounds.winfo_screenwidth() // 2 - ancho// 2
+                    y_ventana=ventanaRounds.winfo_screenheight() // 2 - alto// 2
+                    posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    ventanaRounds.geometry(posicion)
                     imagenVentana = tk.PhotoImage(file="CivilWar5.png")
                     fondoVentana = tk.Label(ventanaRounds, image=imagenVentana).place(x=0, y=0)
                     ventanaRounds.config(bg="Black")
                     ventanaRounds.config(relief="groove")
                     ventanaRounds.config(bd=8)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    ventanaRounds.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(ventanaRounds,
                                      text="Ingrese la cantidad de rounds (Entre 1 y 5).",
                                      font=("TimesNewRoman", 14),
@@ -706,12 +800,21 @@ def programa():
                         return equipo1(nombre,fecha,lugar,tipo,luchas,numero,personaje.get(),equipo)
                     ventanaEquipo = tk.Toplevel()
                     ventanaEquipo.title("GoldenLines")
-                    ventanaEquipo.geometry("350x150")
+                    alto=150
+                    ancho=350
+                    x_ventana=ventanaEquipo.winfo_screenwidth() // 2 - ancho// 2
+                    y_ventana=ventanaEquipo.winfo_screenheight() // 2 - alto// 2
+                    posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    ventanaEquipo.geometry(posicion)
                     imagenVentana = tk.PhotoImage(file="CivilWar5.png")
                     fondoVentana = tk.Label(ventanaEquipo, image=imagenVentana).place(x=0, y=0)
                     ventanaEquipo.config(bg="Black")
                     ventanaEquipo.config(relief="groove")
                     ventanaEquipo.config(bd=8)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    ventanaEquipo.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(ventanaEquipo, text="Ingrese el personaje numero " + str(numero)+" de su equipo 1.", font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
@@ -786,10 +889,19 @@ def programa():
                         return equipo22(nombre,fecha,lugar,tipo,luchas,numero,personaje.get(),equipo,equipo2)
                     ventanaEquipo2 = tk.Toplevel()
                     ventanaEquipo2.title("GoldenLines")
-                    ventanaEquipo2.geometry("350x150")
+                    alto=150
+                    ancho=350
+                    x_ventana=ventanaEquipo2.winfo_screenwidth() // 2 - ancho// 2
+                    y_ventana=ventanaEquipo2.winfo_screenheight() // 2 - alto// 2
+                    posicion=str(ancho)+"x"+str(alto)+"+"+str(x_ventana)+"+"+str(y_ventana)
+                    ventanaEquipo.geometry(posicion)
                     ventanaEquipo2.config(bg="Black")
                     ventanaEquipo2.config(relief="groove")
                     ventanaEquipo2.config(bd=8)
+                    def on_closing2():
+                        Error=mb.showerror(message="Procure no salir hasta termirnar el proceso")
+                    ventanaEquipo2.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(ventanaEquipo2, text="Ingrese el personaje numero " + str(numero)+" de su equipo 2.", font=("TimesNewRoman", 14),
                                      bg="gray",
                                      relief="groove").pack()
@@ -819,13 +931,17 @@ def programa():
                         NuevoTorneo = Torneos(nombre,fecha,lugar,tipo,luchas,equipo,equipo2)
                         NuevoTorneo.crearTorneo()
                         Alerta = mb.showinfo(title="Listo", message="Su torneo ha sido registrado correctamente")
-                        return Menuprincipal()
+                        a=MenuPrincipal()
+                        return a.menuKeingell()
+
 
                 def añadirTorneo(nombre,fecha,lugar,tipo,luchas,equipo,equipo2):
                     NuevoTorneo = Torneos(nombre, fecha, lugar, tipo, luchas, equipo, equipo2)
                     NuevoTorneo.crearTorneo()
                     Alerta = mb.showinfo(title="Listo", message="Su torneo ha sido registrado correctamente")
-                    return Menuprincipal()
+                    a=MenuPrincipal()
+                    return a.menuKeingell()
+
                 def equipos():
                     f = open("MostrarPersonajes.txt")
                     mensaje = f.readlines()
@@ -898,6 +1014,11 @@ def programa():
                     peleas.config(bg="Black")
                     peleas.config(relief="groove")
                     peleas.config(bd=8)
+                    def on_closing2():
+                        pygame.mixer.music.stop()
+                        peleas.destroy()
+                    peleas.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(peleas, text="Porfavor Ingrese la siguiente información", font=("TimesNewRoman", 20), bg="red",
                                      relief="groove").pack()
                     confirmar = tk.Button(peleas, text="Comenzar", font=("TimesNewRoman", 12), bd=8, bg="red", relief="groove",
@@ -959,7 +1080,9 @@ def programa():
                 def jugarTorneoV2(nombre,mensaje):
                     if mensaje==[]:
                         error = mb.showerror(title="Error", message="Este torneo no existe")
-                        return MenuPrincipal()
+                        a=MenuPrincipal()
+                        return a.menuKeingell()
+
                     if(nombre not in mensaje[0]):
                         return jugarTorneoV2(nombre, mensaje[1:])
                     else:
@@ -997,6 +1120,11 @@ def programa():
                     ventanaJugar.config(bg="Black")
                     ventanaJugar.config(relief="groove")
                     ventanaJugar.config(bd=8)
+                    def on_closing2():
+                        pygame.mixer.music.stop()
+                        ventanalugar.destroy()
+                    ventanalugar.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                     label = tk.Label(ventanaJugar, text="Round #"+ str(numero), font=("TimesNewRoman", 20),
                                      bg="red",
                                      relief="groove",bd = 8).pack()
@@ -1050,7 +1178,10 @@ def programa():
                     def VolverGanador():
                         clic=pygame.mixer.Sound("click.mp3")
                         clic.play()
-                        return Menuprincipal()
+                        
+                        a=MenuPrincipal()
+                        return a.menuKeingell()
+
                     info = "Nombre del Torneo: " + str(nombre) + "Fecha: " + str(torneo[1]) + "Lugar: "+ str(torneo[0]) + ", Numero de luchas: " + str(luchas) + ", Victorias equipo1 = "+str(conteo1) + ", Victorias equipo2 = "+str(conteo2)
                     f = open("Torneos.txt","a+")
                     f.write(info)
@@ -1064,6 +1195,8 @@ def programa():
                         ventanaganador.config(bg="Black")
                         ventanaganador.config(relief="groove")
                         ventanaganador.config(bd=8)
+                        ventanalugar.protocol("WM_DELETE_WINDOW", on_closing2)
+                    
                         label = tk.Label(ventanaganador, text="El ganador de su Torneo fue el equipo 1", font=("TimesNewRoman", 20),
                                          bg="gold",
                                          relief="groove").pack()
@@ -1120,7 +1253,7 @@ def programa():
                 ventana.mainloop()
 
             #----------------------------------------------------------------------------------------------------
-            class login:
+            class login: #Clase que encapsula los modulos de inicio de sesion y registro
                 def __init__(self):
                     self.tipo="login"
                 def acomodar(self): #Funcion que ayudará más tarde
@@ -1146,7 +1279,7 @@ def programa():
                         x=login()
                         x.acomodar()
                         
-                    pantallaLogin.protocol("WM_DELETE_WINDOW", on_closing)
+                    pantallaLogin.protocol("WM_DELETE_WINDOW", on_closing) #detecta un cierre de ventana mediante boton de sistema
                     #pantallaLogin.iconbitmap("img.ico")
                     def validar(): #Validación de la contaseña
                         clic=pygame.mixer.Sound("click.mp3")
@@ -1272,9 +1405,9 @@ def programa():
                 a.set_volume(0.15)
                 return iniciojuego()
             else:
-                pantallaCreditos.bind("<Return>", continuarAJuego)
+                pantallaCreditos.bind("<Return>", continuarAJuego) 
         label2=tk.Label(pantallaCreditos, text="Presione Enter para continuar", font=("Times New Roman", 11), bg="black", fg="white").pack(pady=10)
-        pantallaCreditos.bind("<Return>", continuarAJuego)
+        pantallaCreditos.bind("<Return>", continuarAJuego)#Funcion que detecta una entrada por teclado
         pantallaCreditos.mainloop()
 
     def barra():
